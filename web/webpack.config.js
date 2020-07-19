@@ -1,10 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const RULES = require('./webpack.rules')
 const rootDir = path.join(__dirname, '..')
 const webpackEnv = process.env.NODE_ENV || 'development'
-
 module.exports = {
   mode: webpackEnv,
   entry: {
@@ -16,7 +14,23 @@ module.exports = {
   },
   devtool: 'source-map',
   module: {
-    rules: RULES,
+    rules: [
+      {
+        test: /\.(tsx|ts|jsx|js|mjs)$/,
+        exclude: /node_modules/,
+        loader: 'ts-loader',
+      },
+      {
+        test: /\.ttf$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          outputPath: 'assets/fonts',
+          include: path.resolve(__dirname, "node_modules/react-native-vector-icons"),
+        }
+      },
+    ],
+
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -37,6 +51,8 @@ module.exports = {
     ],
     alias: Object.assign({
       'react-native$': 'react-native-web',
+      'react-native-vector-icons': 'react-native-vector-icons/dist'
     }),
   },
 }
+
